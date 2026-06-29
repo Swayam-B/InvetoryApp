@@ -60,6 +60,7 @@ The default PIN is `1901` (set via `SECRET_APP_PIN`).
 | ------ | ----- | ----- |
 | POST   | `/api/auth/login` | Rate-limited (5 / 15 min), sets JWT cookie |
 | GET    | `/api/upload/presigned-url` | 60s S3 PUT url + imageKey |
+| GET    | `/api/upload/view-url` | 300s S3 GET url to display a stored image |
 | CRUD   | `/api/locations`, `/api/containers`, `/api/items` | Cascading deletes |
 | PATCH  | `/api/items/:id/increment` | Atomic `$inc`, clears restock flag |
 | PATCH  | `/api/items/:id/decrement` | Aggregation pipeline; sets restock at 0 |

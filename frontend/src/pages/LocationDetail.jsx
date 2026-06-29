@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Plus, Box, ChevronRight, Trash2, ImageIcon } from 'lucide-react';
+import { ArrowLeft, Plus, ChevronRight, Trash2, ImageIcon } from 'lucide-react';
 import {
   getLocation,
   getContainers,
@@ -9,6 +9,7 @@ import {
 } from '../lib/api.js';
 import { uploadImage } from '../lib/uploadImage.js';
 import { useStore } from '../store/useStore.js';
+import ContainerImage from '../components/ContainerImage.jsx';
 
 export default function LocationDetail() {
   const { id } = useParams();
@@ -132,7 +133,7 @@ export default function LocationDetail() {
                 className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-800/50 px-4 py-3 transition active:scale-[0.99]"
               >
                 <span className="flex min-w-0 items-center gap-3">
-                  <Box size={18} className="shrink-0 text-emerald-400" />
+                  <ContainerImage imageKey={c.imageKey} className="h-10 w-10 shrink-0" />
                   <span className="min-w-0">
                     <span className="block truncate font-medium">{c.name}</span>
                     {c.description && (

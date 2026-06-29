@@ -4,6 +4,7 @@ import { ArrowLeft, Plus } from 'lucide-react';
 import { getContainer, getItems, createItem } from '../lib/api.js';
 import { useStore } from '../store/useStore.js';
 import ItemRow from '../components/ItemRow.jsx';
+import ContainerImage from '../components/ContainerImage.jsx';
 
 export default function ContainerDetail() {
   const { id } = useParams();
@@ -65,6 +66,13 @@ export default function ContainerDetail() {
         >
           <ArrowLeft size={16} /> Back
         </Link>
+      )}
+
+      {container?.imageKey && (
+        <ContainerImage
+          imageKey={container.imageKey}
+          className="h-40 w-full"
+        />
       )}
 
       <div className="flex items-center justify-between">

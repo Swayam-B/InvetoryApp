@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import crypto from 'crypto';
-import { PutObjectCommand } from '@aws-sdk/client-s3';
+import { PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { s3, BUCKET } from '../utils/s3.js';
 
@@ -24,6 +24,22 @@ router.get('/presigned-url', async (req, res) => {
   } catch (err) {
     console.error('Presigned URL error:', err);
     return res.status(500).json({ message: 'Could not generate upload URL' });
+  }
+});
+
+// GET /api/upload/view-url?key=...
+// Returns a short-lived presigned GET url for displaying a stored image.
+router.get('/view-url', async (req, res) => {
+  const key = req.query.key;
+  if (!key) return res.status(400).json({ message: 'key is required' });
+
+  try {
+    const command = new GetObjectCommand({ Bucket: BUCKET, Key: key });
+    const viewUrl = await getSignedUrl(s3, command, { expiresIn: 300 });
+    return res.status(200).json({ viewUrl });
+  } catch (err) {
+    console.error('View URL error:', err);
+    return res.status(500).json({ message: 'Could not generate view URL' });
   }
 });
 

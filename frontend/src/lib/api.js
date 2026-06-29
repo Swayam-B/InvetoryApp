@@ -74,3 +74,5 @@ export const search = (q) => api.get(`/search?q=${encodeURIComponent(q)}`);
 // Upload (presigned URL)
 export const getPresignedUrl = (contentType) =>
   api.get(`/upload/presigned-url?contentType=${encodeURIComponent(contentType)}`);
+export const getViewUrl = (key) =>
+  api.get(`/upload/view-url?key=${encodeURIComponent(key)}`);

@@ -10,17 +10,8 @@ services:
     envVars:
       - key: NODE_VERSION
         value: "20"
-      # Cross-site cookies for the Vercel frontend.
-      - key: COOKIE_SAMESITE
-        value: None
-      - key: COOKIE_SECURE
-        value: "true"
       # Secrets — set these in the Render dashboard, not in this file.
       - key: MONGO_URI
-        sync: false
-      - key: JWT_SECRET
-        sync: false
-      - key: SECRET_APP_PIN
         sync: false
       - key: AWS_REGION
         sync: false

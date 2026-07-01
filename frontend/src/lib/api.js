@@ -1,20 +1,13 @@
-// Thin fetch wrapper. Always sends cookies so the JWT travels with each request.
+// Thin fetch wrapper.
 // Local dev uses the Vite proxy (/api → backend). In production set
 // VITE_API_URL to the deployed backend origin, e.g. https://your-api.onrender.com
 const BASE = `${import.meta.env.VITE_API_URL || ''}/api`;
 
 async function request(path, options = {}) {
   const res = await fetch(`${BASE}${path}`, {
-    credentials: 'include',
     headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
     ...options,
   });
-
-  if (res.status === 401) {
-    const err = new Error('Unauthorized');
-    err.status = 401;
-    throw err;
-  }
 
   if (!res.ok) {
     let message = 'Request failed';
@@ -40,10 +33,6 @@ export const api = {
   patch: (p, body) => request(p, { method: 'PATCH', body: body ? JSON.stringify(body) : undefined }),
   del: (p) => request(p, { method: 'DELETE' }),
 };
-
-// Auth
-export const login = (pin) => api.post('/auth/login', { pin });
-export const checkSession = () => api.get('/me');
 
 // Locations
 export const getLocations = () => api.get('/locations');

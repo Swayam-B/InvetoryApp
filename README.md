@@ -12,24 +12,21 @@ and search everything instantly.
 - **Backend:** Node.js, Express
 - **Database:** MongoDB (Mongoose, referenced architecture)
 - **Storage:** AWS S3 via presigned URLs (images never pass through the server)
-- **Auth:** Zero-friction PIN → JWT in an `httpOnly` `Secure` `SameSite=Strict`
-  cookie, with rate-limited login
 
 ## Project Structure
 
 ```
 backend/
   server.js              Express app, middleware, route wiring
-  middleware/auth.js     JWT cookie verification (protects all non-login routes)
   models/                Location, Container, Item (Mongoose schemas + indexes)
-  routes/                auth, upload (presigned URL), locations, containers, items, search
+  routes/                upload (presigned URL), locations, containers, items, search
   utils/s3.js            AWS S3 client
 frontend/
   src/
-    store/useStore.js    Zustand global state (search overlay, auth, toasts)
+    store/useStore.js    Zustand global state (search overlay, toasts)
     lib/                  api client, image upload, debounce hook
     components/          Navbar, SearchOverlay, ItemRow, Toasts
-    pages/               Login, Locations, LocationDetail, ContainerDetail, ShoppingList
+    pages/               Locations, LocationDetail, ContainerDetail, ShoppingList
   public/                manifest.json, sw.js, icons
 ```
 
@@ -40,7 +37,7 @@ frontend/
 ```bash
 cd backend
 npm install
-cp .env.example .env   # fill in MONGO_URI, JWT_SECRET, AWS_* , SECRET_APP_PIN
+cp .env.example .env   # fill in MONGO_URI and AWS_*
 npm run dev            # http://localhost:5000
 ```
 
@@ -52,13 +49,10 @@ npm install
 npm run dev            # http://localhost:5173 (proxies /api → :5000)
 ```
 
-The default PIN is `1901` (set via `SECRET_APP_PIN`).
-
 ## Key API Routes
 
 | Method | Route | Notes |
 | ------ | ----- | ----- |
-| POST   | `/api/auth/login` | Rate-limited (5 / 15 min), sets JWT cookie |
 | GET    | `/api/upload/presigned-url` | 60s S3 PUT url + imageKey |
 | GET    | `/api/upload/view-url` | 300s S3 GET url to display a stored image |
 | CRUD   | `/api/locations`, `/api/containers`, `/api/items` | Cascading deletes |
@@ -76,10 +70,8 @@ The frontend and backend deploy as two independent services.
    the repo. Render reads `render.yaml` and creates the `inventory-backend` web
    service (root `backend/`).
 2. Set the secret env vars in the Render dashboard (marked `sync: false`):
-   `MONGO_URI`, `JWT_SECRET`, `SECRET_APP_PIN`, the four `AWS_*` values, and
-   `FRONTEND_ORIGIN` (your Vercel URL once you have it).
-3. `COOKIE_SAMESITE=None` and `COOKIE_SECURE=true` are preset so the auth cookie
-   works cross-site.
+   `MONGO_URI`, the four `AWS_*` values, and `FRONTEND_ORIGIN` (your Vercel URL
+   once you have it).
 
 ### Frontend on Vercel
 1. In Vercel: **Add New → Project**, import the repo, set **Root Directory** to
